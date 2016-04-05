@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>屏保</title>
+<style>
+*{margin:0;padding:0;}
+html{overflow:hidden;}
+body{background:#000;}
+#c1{background:#000;}
+</style>
+<script>
+window.onload=function(){
+	var oC=document.getElementById("c1");
+	var gd=oC.getContext("2d");
+	 
+	var winW=window.innerWidth;
+	var winH=window.innerHeight;
+	oC.width=winW;
+	oC.height=winH;
+	
+	var N=6;
+	var aPoint=[];
+	for(var i=0;i<N;i++){
+		aPoint[i]={
+			w:1,
+			h:1,
+			x:rnd(0,winW),
+			y:rnd(0,winH),
+			speedX:rnd(-10,10),
+			speedY:rnd(-10,10)
+		};
+	}
+	
+	var oldPoint=[];
+	setInterval(function(){
+		
+		gd.clearRect(0,0,oC.width,oC.height);
+		for(var i=0;i<N;i++){
+			drawPoint(aPoint[i]);
+			
+			aPoint[i].x+=aPoint[i].speedX;
+			aPoint[i].y+=aPoint[i].speedY;
+			
+		
+			if(aPoint[i].x<0){
+				aPoint[i].speedX*=-1;
+			}
+			if(aPoint[i].x>winW){
+				aPoint[i].speedX*=-1;
+			}
+			if(aPoint[i].y < 0){
+				aPoint[i].speedY*=-1;
+			}
+			if(aPoint[i].y > winH){
+				aPoint[i].speedY*=-1;
+			}	
+		}
+		
+		
+	
+		gd.beginPath();
+		gd.moveTo(aPoint[0].x,aPoint[0].y);
+		for(var i=1;i< N;i++){
+			gd.lineTo(aPoint[i].x,aPoint[i].y);
+		}
+		gd.closePath();
+		gd.strokeStyle = "red";
+		gd.stroke();
+		
+		
+		var arr=[];
+		for(var i=0;i<N;i++){
+			arr.push({x:aPoint[i].x,y:aPoint[i].y});
+		}
+		oldPoint.push(arr);
+		
+		while(oldPoint.length>20){
+			oldPoint.shift();
+		}
+		
+		
+		for(var i=0;i<oldPoint.length; i++){
+			gd.beginPath();
+			gd.moveTo(oldPoint[i][0].x,oldPoint[i][0].y);
+			
+			for(var j=1;j<N;j++){
+				gd.lineTo(oldPoint[i][j].x,oldPoint[i][j].y);
+			}
+			gd.closePath();
+			var opacity=i/oldPoint.length;
+			gd.strokeStyle="rgba(255,0,0,"+opacity+")";
+			gd.stroke();
+		}
+	},16);
+	
+	
+	
+	function drawPoint(p){
+		gd.fillStyle="#fff";
+		gd.fillRect(p.x,p.y,p.w,p.h);
+		gd.strokeRect(p.x,p.y,p.w,p.h);
+	}
+};
+function rnd(n,m){
+	return 	Math.floor(Math.random()*(m-n) + n);
+}
+</script>
+</head>
+
+<body>
+<canvas id="c1"></canvas>
+</body>
+</html>

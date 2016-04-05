@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>瀑布流</title>
+<style>
+*{padding:0;margin:0;list-style:none;}
+#div1{ position:absolute;left:10px;top:0px;background:#CCC;overflow:hidden;width:930px;margin:0 auto;}
+#div1 ul{float:left;width:300px;margin-right:10px;background:#666;}
+#div1 ul li{background: #333;margin-bottom:10px;}
+</style>
+<script>
+window.onload=function(){
+	var oDiv=document.getElementById('div1');
+	var aUl=oDiv.children;
+	function createLi(){
+		var oLi=document.createElement('li');
+		oLi.style.height=parseInt(50+Math.random()*(500-50))+'px';
+		return oLi;	
+	}
+	
+	
+	function insertToUl(n){
+		for(var j=0;j<n;j++){
+			var arr=[];
+			for(var i=0;i<aUl.length;i++){
+				arr.push(aUl[i]);	
+			}
+			arr.sort(function(ul1,ul2){return ul1.offsetHeight-ul2.offsetHeight});
+			arr[0].appendChild(createLi());
+			
+		}	
+	}
+	insertToUl(15);
+	
+	window.onscroll=function(){
+		var scrTop=document.documentElement.scrollTop||document.body.scrollTop;
+		var cHeight=document.documentElement.clientHeight;
+		var bodyH = document.body.scrollHeight; 
+		
+		if(bodyH<=scrTop+cHeight){
+			insertToUl(10);
+		}	
+	};
+};
+</script>
+</head>
+
+<body>
+<div id="div1">
+	<ul>
+    </ul>
+	<ul>
+    </ul>
+	<ul>
+    </ul>
+</div>
+</body>
+</html>

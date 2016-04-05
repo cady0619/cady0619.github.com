@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>放大镜</title>
+<style>
+#div1{position:relative;width:300px;height:300px;}
+#mark{width:40px;height:40px;position:absolute;left:0;top:0;background:#069;opacity:0.5;display:none}
+#div2{width:300px;height:300px;position:absolute;left:310px;top:0;overflow:hidden;display:none}
+#div2 #bigimg{position:absolute;left:0;top:0}
+</style>
+<script>
+window.onload=function(){
+	var oDiv1=document.getElementById('div1');
+	var oDiv2=document.getElementById('div2');
+	var oM=document.getElementById('mark');
+	var oBig=document.getElementById('bigimg');
+	oDiv1.onmouseover=function(){
+		oDiv2.style.display='block';
+		oM.style.display='block';
+	};
+	oDiv1.onmouseout=function(){
+		oDiv2.style.display='none';
+		oM.style.display='none';
+	};
+	oDiv1.onmousemove=function(ev){
+		var evEt=ev||event;
+		var l=evEt.clientX-oM.offsetWidth/2;
+		var t=evEt.clientY-oM.offsetHeight/2;
+		if(l<0) l=0;
+		if(l>oDiv1.offsetWidth-oM.offsetWidth)
+			l=oDiv1.offsetWidth-oM.offsetWidth;
+		if(t<0) t=0;
+		if(t>oDiv1.offsetHeight-oM.offsetHeight)
+		t=oDiv1.offsetHeight-oM.offsetHeight;
+		oM.style.top=t+'px';
+		oM.style.left=l+'px';
+		oBig.style.left=-oM.offsetLeft/(oDiv1.offsetWidth-oM.offsetWidth)*(oBig.offsetWidth-oDiv2.offsetWidth)+'px';
+		oBig.style.top=-oM.offsetTop/(oDiv1.offsetHeight-oM.offsetHeight)*(oBig.offsetHeight-oDiv2.offsetHeight)+'px';
+	};
+};
+</script>
+</head>
+
+<body>
+	<div id="div1">
+    	<img src="images/page0.jpg" width="300" height="300" />
+        <div id="mark"></div>
+        <div id="div2">
+        	<img id="bigimg" src="images/page0.jpg" width="600" height="650" />
+        </div>
+    </div>
+</body>
+</html>

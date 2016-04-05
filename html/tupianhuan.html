@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>图片环</title>
+<style>
+html{overflow:hidden;}
+body{background:#000;}
+#ul1{position:relative;width:130px;height:220px;margin:150px auto;background:#ccc;
+	transform-style:preserve-3d;
+	transform:perspective(800px) rotateX(-15deg) rotateY(0deg);}
+#ul1 li{position:absolute;left:0;top:0;width:130px;height:220px;transition:1s all ease;box-shadow:0 0 10px #fff;border-radius:10px;overflow:hidden;line-height:200px;text-align:center;font-size:20px;}
+#ul1 li img{width:130px;height:220px;}
+</style>
+<script>
+window.onload=function(){
+
+	var oUl=document.getElementById("ul1");
+	var aLi=oUl.children;
+	var len=aLi.length;
+	
+	for(var i=0;i<len;i++){
+		
+		aLi[i].style.transition="1s all ease"+(len-i)*300+"ms";
+		aLi[i].style.transform="rotateY("+360/len*i+"deg) translateZ(400px)";
+	}
+	aLi[0].addEventListener("transitionend",function(){
+		for(var i=0;i<len;i++){
+			aLi[i].style.transition="1s all ease";
+			var d=360/len*i;
+			
+			if(d>180){
+				d=360-d;
+			}
+			d=180-d;
+			var scale=d/180;
+			
+			scale<0.3&&(scale = 0.3);
+			aLi[i].style.opacity=scale; 	
+		}
+	},false);
+	var y=0;
+	var x=150;
+	var speedX=0;
+	var speedY=0;
+	var lastX=0;
+	var lastY=0;
+	var timer=null;
+	var count=0;
+	oUl.onmousedown=function(ev){
+		clearInterval(timer);
+		var disX=ev.clientX - y;
+		var disY=ev.clientY - x;
+		
+		document.onmousemove=function(ev){
+			y=ev.clientX-disX;
+			x=ev.clientY-disY;
+			
+			if(x>600){
+				x=600;
+			} else if(x<-600){
+				x=-600;	
+			}
+			
+			speedX=x-lastX;
+			speedY=y-lastY;
+			lastX=x;
+			lastY=y;
+			oUl.style.transform="perspective(800px) rotateX("+-x/10+"deg) rotateY("+y/10+"deg)";
+		};
+		document.onmouseup=function(){
+			document.onmousemove=null;
+			document.onmouseup=null;
+			
+			clearInterval(timer);
+			timer=setInterval(function(){
+				
+				x+=speedX;
+				y+=speedY;
+				
+				speedX*=0.95;
+				speedY*=0.95;
+				if(Math.abs(speedX)<1){
+					speedX=0;
+				}
+				if(Math.abs(speedY)<1){
+					speedY=0;
+				}
+				
+				if(speedX==0&&speedY== 0){
+					clearInterval(timer);
+				}
+				oUl.style.transform="perspective(800px) rotateX("+-x/10+"deg) rotateY("+y/10+"deg)"
+			},100);
+		};
+		return false;
+	};
+};
+</script>
+</head>
+
+<body>
+<ul id="ul1">
+    <li><img src="images/page1.jpg" /></li>
+    <li><img src="images/page2.jpg" /></li>
+    <li><img src="images/page3.jpg" /></li>
+    <li><img src="images/page4.jpg" /></li>
+    <li><img src="images/page5.jpg" /></li>
+    <li><img src="images/page6.jpg" /></li>
+    <li><img src="images/page7.jpg" /></li>
+    <li><img src="images/page8.jpg" /></li>
+    <li><img src="images/page9.jpg" /></li>
+    <li><img src="images/page10.jpg" /></li>
+    <li><img src="images/page11.jpg" /></li>
+</ul>
+</body>
+</html>

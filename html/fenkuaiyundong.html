@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+
+
+<title>分块运动</title>
+<style>
+*{margin:0;padding:0;list-style:none;}
+#div1{ background:url(images/1.jpg);width:700px;height:400px; margin: 0 auto;}
+#div1 div{width:100px;height:100px; float:left; background:url(images/0.jpg);color:#fff;font-size:20px;}
+</style>
+<script src="move.js"></script>
+<script>
+window.onload=function(){
+	var oDiv=document.getElementById('div1');
+	var aDiv=oDiv.children;
+	var oBtn=document.getElementById('btn1');
+	var now=0;
+	var count=3;
+	var ready=true;
+
+	var nCol=7;
+	var nRow=4;
+	for(var r=0;r<nRow;r++){
+		for(var c=0;c<nCol;c++){
+			var oBox=document.createElement('div');
+			oBox.style.width=oDiv.offsetWidth/nCol+'px';
+			oBox.style.height=oDiv.offsetHeight/nRow+'px';	
+			oDiv.appendChild(oBox);
+			oBox.style.backgroundPosition=-c*oBox.offsetWidth+'px '+ -r*oBox.offsetHeight+'px';
+			
+		}
+	}
+	
+	oBtn.onclick=function(){
+		if(!ready) return;
+		ready=false;
+		for(var i=0;i<aDiv.length;i++){
+			(function(index){
+				setTimeout(function(){
+					move(aDiv[index],{opacity:0},{time:1000});	
+				},Math.random()*500);
+			})(i);	
+		}
+		
+		setTimeout(function(){
+			
+			now++;
+			now%=count;
+			for(var i=0;i<aDiv.length;i++){
+				aDiv[i].style.backgroundImage='url(images/'+now+'.jpg)';
+				aDiv[i].style.opacity=1;	
+			}
+			oDiv.style.backgroundImage='url(images/'+(now+1)%count+'.jpg)';
+			ready=true;	
+		},1700);
+	};
+};
+</script>
+</head>
+
+<body>
+<input type="button" value="下一张" id="btn1">
+<div id="div1"></div>
+
+</body>
+</html>

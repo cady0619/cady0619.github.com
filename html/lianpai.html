@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>N连拍</title>
+<style>
+body{background:#000;}
+#c1{background:#fff;}
+</style>
+<script>
+function d2a(n){
+	return n*Math.PI/180;
+}
+window.onload = function(){
+	var oC=document.getElementById("c1");
+	var gd=oC.getContext("2d");
+	gd.strokeStyle="blue";
+	
+	var d=0;
+	setInterval(function(){
+		gd.save();
+		drawRect(gd,300,150,300,200,d++);
+		gd.restore();
+	},30);
+	
+	function drawRect(gd,x,y,w,h,d){
+		gd.translate(x + w/2,y +　h/2);
+		
+		gd.rotate(d2a(d));
+		
+		gd.strokeRect(-w/2,-h/2,w,h);
+	}
+	var oBtn=document.getElementById("btn1");  
+	oBtn.onclick=function(){
+		 
+		
+		var src=oC.toDataURL("image/gif");
+		
+		window.open(src);
+	};
+};
+</script>
+</head>
+
+<body>
+
+<input id="btn1" type="button" value="N连拍" /> 
+<canvas id="c1" width="800" height="500"></canvas>
+</body>
+</html>

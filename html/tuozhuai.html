@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>拖拽</title>
+<style>
+*{list-style:none;padding:0;margin:0;}
+#ul1{width:1200px;margin:50px auto;position:relative;}
+#ul1 li{float:left;margin:30px;border:5px solid #399;background:#fff;}
+li img{width:150px;height:200px;}
+</style>
+<script src="move.js"></script>
+
+<script>
+window.onload=function(){
+	var aLi=document.getElementById('ul1').children;
+	var zIndex=2;
+
+	var aPos=[];
+	for(var i=0;i<aLi.length;i++){
+		aPos.push({left:aLi[i].offsetLeft,top:aLi[i].offsetTop});	
+		aLi[i].style.left=aPos[i].left+'px';
+		aLi[i].style.top=aPos[i].top+'px';
+	}
+	for(var i=0;i<aLi.length;i++){
+		aLi[i].style.position='absolute';	
+		aLi[i].style.margin=0;
+		aLi[i].index=i;
+	}
+	
+	for(var i=0;i<aLi.length;i++){
+		drag(aLi[i]);
+	}	
+
+	function drag(obj){
+		obj.onmousedown=function(ev){
+			obj.style.zIndex=zIndex++;
+			clearInterval(obj.timer);
+			
+			var oEvt=ev||event;
+			var disX=oEvt.clientX-obj.offsetLeft;
+			var disY=oEvt.clientY-obj.offsetTop;
+			document.onmousemove=function(ev){
+				var oEvt=ev||event;
+				obj.style.left=oEvt.clientX-disX+'px';
+				obj.style.top=oEvt.clientY-disY+'px';	
+			
+				var nearObj=findNearest(obj);
+				if(nearObj && nearObj!=obj){
+					
+					var n=obj.index;
+					var m=nearObj.index;
+					
+					for(var i=0;i<aLi.length;i++){
+						if(aLi[i].index>n && aLi[i].index<=m){
+							aLi[i].index--;
+							move(aLi[i],aPos[aLi[i].index]);	
+						}else if(aLi[i].index<n && aLi[i].index>=m){
+							aLi[i].index++;
+							move(aLi[i],aPos[aLi[i].index]);
+						}
+						
+					}
+					obj.index=m;
+				}
+				
+			};
+			document.onmouseup=function(){
+				document.onmousemove=document.onmouseup=null;
+				
+				move(obj,aPos[obj.index]);
+				
+				obj.releaseCapture&&obj.releaseCapture();
+			};
+			obj.setCapture&&obj.setCapture();
+			return false;	
+		};	
+	}
+	
+	function findNearest(obj){
+		var minDis=99999999999999;//距离
+		var minDisIndex=-1;//下标
+		for(var i=0;i<aLi.length;i++){
+			if(collTest(obj,aLi[i])){
+				
+				var dis=getDis(obj,aLi[i]);
+				if(dis<minDis){
+					minDis=dis;
+					minDisIndex=i;	
+				}
+			}
+		}
+		if(minDisIndex==-1){
+			return null;
+		}else{
+			return aLi[minDisIndex]	
+		}
+	}
+	
+	function getDis(obj1,obj2){
+		var a=aPos[obj2.index].top-obj1.offsetTop;
+		var b=aPos[obj2.index].left-obj1.offsetLeft;
+		return Math.sqrt(a*a+b*b);
+	}
+	
+	function collTest(obj1,obj2){
+		var l1=obj1.offsetLeft;
+		var t1=obj1.offsetTop;
+		var r1=obj1.offsetLeft+obj1.offsetWidth;
+		var b1=obj1.offsetTop+obj1.offsetHeight;
+		
+		var l2=aPos[obj2.index].left
+		var t2=aPos[obj2.index].top;
+		var r2=aPos[obj2.index].left+obj2.offsetWidth;
+		var b2=aPos[obj2.index].top+obj2.offsetHeight;
+		
+		if(l1>r2 || t1>b2 || r1<l2 || b1<t2){
+			return false;
+		}else{
+			return true;
+		}
+	}
+};
+</script>
+</head>
+
+<body>
+<ul id="ul1">
+	<li><img src="images/s1.jpg" /></li>
+	<li><img src="images/s2.jpg" /></li>
+	<li><img src="images/s3.jpg" /></li>
+	<li><img src="images/s4.jpg" /></li>
+	<li><img src="images/s5.jpg" /></li>
+	<li><img src="images/s6.jpg" /></li>
+	<li><img src="images/s7.jpg" /></li>
+	<li><img src="images/s8.jpg" /></li>
+	<li><img src="images/s9.jpg" /></li>
+	
+</ul>
+</body>
+</html>
